@@ -1,6 +1,6 @@
-package DAO;
+package com.chupin.DAO;
 
-import model.Tag;
+import com.chupin.model.Tag;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public interface TagDAO {
 
     Tag getById(int id);
 
-    void save(Tag tag);
+    int save(Tag tag);
 
     void update(Tag tag);
 

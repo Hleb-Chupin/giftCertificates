@@ -1,9 +1,10 @@
-package DAO;
+package com.chupin.DAO;
 
-import model.Certificate;
-import model.Tag;
+import com.chupin.model.Certificate;
+import com.chupin.model.Tag;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CertificateDAO {
 
@@ -17,9 +18,9 @@ public interface CertificateDAO {
 
     Certificate getById(int id);
 
-    void save(Certificate certificate, Tag tag);
+    int save(Certificate certificate, Set<Tag> tagList);
 
-    void update(Certificate certificate, Tag tag);
+    void update(Certificate certificate, Set<Tag> tagList);
 
     void delete(Certificate certificate);
 }

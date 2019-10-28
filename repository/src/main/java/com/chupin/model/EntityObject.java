@@ -1,4 +1,4 @@
-package model;
+package com.chupin.model;
 
 import javax.persistence.*;
 
@@ -9,16 +9,6 @@ public class EntityObject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = ("id"))
     int id;
-
-    private Certificate certificate;
-
-    public Certificate getCertificate() {
-        return certificate;
-    }
-
-    public void setCertificate(Certificate certificate) {
-        this.certificate = certificate;
-    }
 
     public int getId() {
         return id;

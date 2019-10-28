@@ -1,9 +1,9 @@
-package model;
+package com.chupin.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -28,13 +28,13 @@ public class Certificate extends EntityObject {
     @Column(name = "duration")
     private int duration;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "certificates_tags",
             joinColumns = @JoinColumn(name = "certificate_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
     )
-    private Set<Tag> tags = new HashSet<>();
+    private Set<Tag> tags;
 
     public Set<Tag> getTags() {
         return tags;
@@ -103,5 +103,23 @@ public class Certificate extends EntityObject {
                 ", duration=" + duration +
                 ", id=" + id +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Certificate that = (Certificate) o;
+        return Double.compare(that.certificatePrice, certificatePrice) == 0 &&
+                duration == that.duration &&
+                Objects.equals(certificateName, that.certificateName) &&
+                Objects.equals(certificateDescription, that.certificateDescription) &&
+                Objects.equals(dateOfCreation, that.dateOfCreation) &&
+                Objects.equals(dateOfModification, that.dateOfModification);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(certificateName, certificateDescription, certificatePrice, dateOfCreation, dateOfModification, duration);
     }
 }

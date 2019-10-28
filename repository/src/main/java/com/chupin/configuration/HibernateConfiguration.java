@@ -1,4 +1,4 @@
-package config;
+package com.chupin.configuration;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +52,7 @@ public class HibernateConfiguration {
     }
 
     @Bean
-    LocalSessionFactoryBean sessionFactoryBean() {
+    public LocalSessionFactoryBean sessionFactoryBean() {
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource());
         sessionFactoryBean.setHibernateProperties(hibernateProperties());
