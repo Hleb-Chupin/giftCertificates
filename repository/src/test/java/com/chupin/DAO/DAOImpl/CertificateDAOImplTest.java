@@ -13,11 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,84 +21,85 @@ import java.util.Set;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class CertificateDAOImplTest {
 
-    private Certificate certificateExpected;
-    private Set<Tag> tagSet;
-
     @Autowired
     private CertificateDAO certificateDAO;
 
-    public void initializeNewEntity() {
-        certificateExpected = new Certificate();
-        certificateExpected.setCertificateName("Birthday");
-        certificateExpected.setCertificatePrice(200);
-        certificateExpected.setCertificateDescription("");
-        certificateExpected.setDateOfCreation(LocalDate.now());
-        certificateExpected.setDuration(365);
-        Tag tag = new Tag();
-        tag.setTagName("CityTour");
-        tagSet = new HashSet<>();
-        tagSet.add(tag);
-        certificateExpected.setTags(tagSet);
-    }
-
-    public void tearDown() {
-
+    public List<Certificate> initializeNewEntities() {
+        String[] names = {"Neris fishing", "Family and the forest", "London sightseeing", "Baloon flight", "Wine testing"};
+        String[] tags = {"Fishing", "Holiday", "Citytour", "Air", "Food"};
+        List<Certificate> listCertificatesInit = new ArrayList<>();
+        for (int i = 0; i < names.length; i++) {
+            Certificate certificate = new Certificate();
+            certificate.setCertificateName(names[i]);
+            Tag tag = new Tag();
+            tag.setTagName(tags[i]);
+            Set<Tag> setOfTags = new HashSet<>();
+            setOfTags.add(tag);
+            certificate.setTags(setOfTags);
+            certificateDAO.save(certificate);
+            listCertificatesInit.add(certificate);
+        }
+        return listCertificatesInit;
     }
 
     @Test
     public void getAll() {
-        initializeNewEntity();
-        certificateDAO.save(certificateExpected, tagSet);
-        List<Certificate> listCertificateExpected = new ArrayList<>();
-        listCertificateExpected.add(certificateExpected);
-        assertThat(certificateDAO.getAll(), equalTo(listCertificateExpected));
+        assertThat(certificateDAO.getAll().isEmpty(), is(true));
+        List<Certificate> expectedList = initializeNewEntities();
+        assertThat(certificateDAO.getAll(), equalTo(expectedList));
     }
 
     @Test
     public void getByTag() {
+        List<Certificate> expectedList = initializeNewEntities();
+        assertThat(certificateDAO.getByTag(expectedList.get(2).getTags().iterator().next()).iterator().next(), equalTo(expectedList.get(2)));
     }
 
     @Test
     public void getByPartOfName() {
+        List<Certificate> expectedList = initializeNewEntities();
+        String expectedName = expectedList.get(1).getCertificateName();
+        String partName = expectedName.substring(1, expectedName.length() - 1);
+        assertThat(certificateDAO.getByPartOfName(partName).get(0), equalTo(expectedList.get(1)));
     }
 
+    //
     @Test
     public void getSortedCertificatesByName() {
+        List<Certificate> expectedList = initializeNewEntities();
+        assertThat(certificateDAO.getSortedCertificatesByName().get(3), equalTo(expectedList.get(0)));
     }
 
     @Test
     public void getById() {
-        initializeNewEntity();
-        certificateDAO.save(certificateExpected, tagSet);
-        assertThat(certificateDAO.getById(certificateExpected.getId()).getTags(), equalTo(tagSet));
-        assertThat(certificateDAO.getById(certificateExpected.getId()), equalTo(certificateExpected));
+        List<Certificate> expectedList = initializeNewEntities();
+        Certificate expectedCertificate = expectedList.get(3);
+        assertThat(certificateDAO.getById(expectedCertificate.getId()), equalTo(expectedCertificate));
     }
 
     @Test
     public void save() {
-        assertThat(certificateDAO.getAll(), empty());
-        initializeNewEntity();
-        certificateDAO.save(certificateExpected, tagSet);
+        List<Certificate> expectedList = initializeNewEntities();
         assertThat(certificateDAO.getAll().isEmpty(), is(false));
     }
 
+    //
     @Test
     public void update() {
-        initializeNewEntity();
-        certificateDAO.save(certificateExpected, tagSet);
-        Certificate certificateExepectedForThatMethod = certificateDAO.getById(certificateExpected.getId());
-        certificateExepectedForThatMethod.setCertificateName("New Year");
-        certificateExepectedForThatMethod.setCertificatePrice(990);
-        certificateDAO.update(certificateExepectedForThatMethod, tagSet);
-        assertThat(certificateDAO.getById(certificateExepectedForThatMethod.getId()), equalTo(certificateExepectedForThatMethod));
+        List<Certificate> expectedList = initializeNewEntities();
+        Certificate expectedCertificate = expectedList.get(2);
+        expectedCertificate.setCertificateName("Changed name");
+        certificateDAO.update(expectedCertificate);
+        assertThat(certificateDAO.getById(expectedCertificate.getId()), equalTo(expectedCertificate));
     }
 
     @Test
     public void delete() {
-        initializeNewEntity();
-        certificateDAO.save(certificateExpected, tagSet);
+        List<Certificate> expectedList = initializeNewEntities();
         assertThat(certificateDAO.getAll().isEmpty(), is(false));
-        certificateDAO.delete(certificateDAO.getById(certificateExpected.getId()));
+        for (int i = 0; i < expectedList.size(); i++) {
+            certificateDAO.delete(expectedList.get(i));
+        }
         assertThat(certificateDAO.getAll().isEmpty(), is(true));
     }
 }

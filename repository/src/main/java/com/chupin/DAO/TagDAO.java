@@ -8,9 +8,9 @@ public interface TagDAO {
 
     List<Tag> getAll();
 
-    Tag getById(int id);
+    Tag getById(long id);
 
-    int save(Tag tag);
+    long save(Tag tag);
 
     void update(Tag tag);
 

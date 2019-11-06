@@ -4,9 +4,9 @@ import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "tags")
-public class Tag extends EntityObject {
+public class Tag extends Entity {
 
     @Column(name = "tag_name")
     private String tagName;

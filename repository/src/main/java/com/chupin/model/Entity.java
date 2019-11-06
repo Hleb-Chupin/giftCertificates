@@ -3,14 +3,14 @@ package com.chupin.model;
 import javax.persistence.*;
 
 @MappedSuperclass
-public class EntityObject {
+public abstract class Entity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = ("id"))
-    int id;
+    long id;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

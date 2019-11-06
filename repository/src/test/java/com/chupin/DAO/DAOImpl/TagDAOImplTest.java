@@ -17,54 +17,48 @@ import static org.hamcrest.Matchers.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class TagDAOImplTest {
 
-    private Tag tagExpected;
-
     @Autowired
     private TagDAO tagDAO;
 
-    public void initializeNewEntity() {
-        tagExpected = new Tag();
+    public Tag initializeNewEntity() {
+        Tag tagExpected = new Tag();
         tagExpected.setTagName("CityTour");
+        tagDAO.save(tagExpected);
+        return tagExpected;
     }
 
     @Test
     public void getAll() {
+        assertThat(tagDAO.getAll().isEmpty(), is(true));
         initializeNewEntity();
-        tagDAO.save(tagExpected);
         assertThat(tagDAO.getAll().isEmpty(), is(false));
-        assertThat(tagDAO.getAll().size(), equalTo(1));
     }
 
     @Test
     public void getById() {
-        initializeNewEntity();
-        tagDAO.save(tagExpected);
+        Tag tagExpected = initializeNewEntity();
         assertThat(tagDAO.getById(tagExpected.getId()), equalTo(tagExpected));
     }
 
     @Test
     public void save() {
-        initializeNewEntity();
         assertThat(tagDAO.getAll().isEmpty(), is(true));
-        tagDAO.save(tagExpected);
+        initializeNewEntity();
         assertThat(tagDAO.getAll().isEmpty(), is(false));
     }
 
     @Test
     public void update() {
-        initializeNewEntity();
-        tagDAO.save(tagExpected);
+        Tag tagExpected = initializeNewEntity();
         assertThat(tagDAO.getById(tagExpected.getId()).getTagName(), equalTo(tagExpected.getTagName()));
-        Tag tagExpectedForThatMethod = tagDAO.getById(tagExpected.getId());
-        tagExpectedForThatMethod.setTagName("Mountain holidays");
-        tagDAO.update(tagExpectedForThatMethod);
-        assertThat(tagDAO.getById(tagExpectedForThatMethod.getId()).getTagName(), equalTo("Mountain holidays"));
+        tagExpected.setTagName("Changed name");
+        tagDAO.update(tagExpected);
+        assertThat(tagDAO.getById(tagExpected.getId()).getTagName(), equalTo("Changed name"));
     }
 
     @Test
     public void delete() {
-        initializeNewEntity();
-        tagDAO.save(tagExpected);
+        Tag tagExpected = initializeNewEntity();
         assertThat(tagDAO.getAll().isEmpty(), is(false));
         tagDAO.delete(tagExpected);
         assertThat(tagDAO.getAll().isEmpty(), is(true));

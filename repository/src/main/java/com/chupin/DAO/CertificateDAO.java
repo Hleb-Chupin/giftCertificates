@@ -10,17 +10,17 @@ public interface CertificateDAO {
 
     List<Certificate> getAll();
 
-    List<Certificate> getByTag(Tag tag);
+    Certificate getById(long id);
 
-    List<Certificate> getByPartOfName(Tag tag);
+    long save(Certificate certificate);
 
-    List<Certificate> getSortedCertificatesByName();
-
-    Certificate getById(int id);
-
-    int save(Certificate certificate, Set<Tag> tagList);
-
-    void update(Certificate certificate, Set<Tag> tagList);
+    void update(Certificate certificate);
 
     void delete(Certificate certificate);
+
+    Set<Certificate> getByTag(Tag tag);
+
+    List<Certificate> getByPartOfName(String name);
+
+    List<Certificate> getSortedCertificatesByName();
 }

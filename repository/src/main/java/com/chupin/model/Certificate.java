@@ -2,13 +2,12 @@ package com.chupin.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "certificates")
-public class Certificate extends EntityObject {
+public class Certificate extends Entity {
 
     @Column(name = "name")
     private String certificateName;
@@ -28,7 +27,7 @@ public class Certificate extends EntityObject {
     @Column(name = "duration")
     private int duration;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "certificates_tags",
             joinColumns = @JoinColumn(name = "certificate_id", referencedColumnName = "id"),
